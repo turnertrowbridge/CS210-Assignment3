@@ -29,13 +29,16 @@ bool Orgtree::isEmployeePresentInOrg(Employee *head, int e_id) {
         // if not found, return false
     else {
         // loop through child nodes
-//        for (int i = 0; i < head->getDirectReports().size(); i++) {
+        bool isFound = false;
         for (Employee* e: head->getDirectReports()) {
+            isFound = isEmployeePresentInOrg(e, e_id);
             cout << e->getEmployeeID() << endl;
+
             // recursively search child nodes for id
-            if (isEmployeePresentInOrg(e, e_id)) {
-                return true;
+            if (isFound == true) {
+            return isFound;
             }
+
         }
         return false;
     }
@@ -74,8 +77,6 @@ int Orgtree::findEmployeeLevel(Employee *head, int e_id, int headLevel) {
     }
 
         // search employee from each child of the head
-        // return true if the employee is found in one of the child subtree
-        // if not found, return false
     else {
         // loop through child nodes
 //        for (int i = 0; i < head->getDirectReports().size(); i++) {
