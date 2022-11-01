@@ -31,7 +31,7 @@ bool Orgtree::isEmployeePresentInOrg(Employee *head, int e_id) {
 
         //check if root is value
         if (head->getEmployeeID() == e_id) {
-            return false;
+            return true;
         }
 
         else {
