@@ -25,7 +25,7 @@ using namespace std;
  * @param didPass - The test condition (true to pass, false to fail)
  * @param message - Description of what is being tested
  */
-void assert_(bool didPass, string message) {
+void assert(bool didPass, string message) {
     if (didPass) {
         cout << "Passed: " << message << endl;
     } else {
@@ -79,15 +79,26 @@ int main(int argc, char **argv) {
 
     // Test isEmployeePresentInOrg function
     bool employeePresent = Orgtree::isEmployeePresentInOrg(head, 6);
-    assert_(employeePresent, "ID 6 Present in tree");
+    assert(employeePresent, "ID 6 Present in tree");
     employeePresent = Orgtree::isEmployeePresentInOrg(head, -2);
-    assert_(employeePresent == false, "ID -2 Not present in tree");
+    assert(employeePresent == false, "ID -2 Not present in tree");
+    employeePresent = Orgtree::isEmployeePresentInOrg(head, 12);
+    assert(employeePresent, "ID 12 present in tree");
+
+    for(int i =1; i < 13; i++){
+        employeePresent = Orgtree::isEmployeePresentInOrg(head, i);
+        assert(employeePresent, "ID present in tree");
+    }
+
 
     //TODO...
 
     // Test findEmployeeLevel function
     int employeeLevel = Orgtree::findEmployeeLevel(head, 4, 0);
-    assert_(employeeLevel == 1, "Level of ID 4 returns " + to_string(employeeLevel) + ", expected 1");
+    assert(employeeLevel == 1, "Level of ID 4 returns " + to_string(employeeLevel) + ", expected 1");
+
+    int employeeLevel1 = Orgtree::findEmployeeLevel(head, 12, 0);
+    assert(employeeLevel1 == 3, "Level of ID 12 returns " + to_string(employeeLevel1) + ", expected 3");
 
     //TODO...
 
@@ -99,7 +110,7 @@ int main(int argc, char **argv) {
 
     // Test findNumOfManagersBetween function
     int numManagers = Orgtree::findNumOfManagersBetween(head, 10, 11);
-    assert_(numManagers == 3, "Managers between 10 and 11 returns " + to_string(numManagers) + ", expected 3");
+    assert(numManagers == 3, "Managers between 10 and 11 returns " + to_string(numManagers) + ", expected 3");
 
     // TODO numManagers = ...
 
