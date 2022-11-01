@@ -66,26 +66,32 @@ int Orgtree::findEmployeeLevel(Employee *head, int e_id, int headLevel) {
 
     // base case 1: empty organization chart
     if (head == nullptr) {
-        return Employee::NOT_FOUND;
+        return Employee::EMPTY_EMPLOYEEID;
     }
-
-    // base case 2: the employee is found, returns the employee level
+        // base case 2: if the employee is found, return true
     else if (head->getEmployeeID() == e_id) {
         return headLevel;
     }
 
-    // search employee from each child of the head
-
-    // if not found
+        // search employee from each child of the head
+        // return true if the employee is found in one of the child subtree
+        // if not found, return false
     else {
-        for (Employee* e: head->getDirectReports()) {
-                cout << headLevel << endl;
-                // recursively search child nodes for id
-                if (findEmployeeLevel(e, e_id, headLevel)) {
-                    return headLevel;
-                }
-
+        // loop through child nodes
+//        for (int i = 0; i < head->getDirectReports().size(); i++) {
+    for (Employee* e: head->getDirectReports()) {
+            headLevel++;
+            cout << "Employee ID: " << e->getEmployeeID() << endl;
+            cout << "Head level: " << headLevel << endl;
+            // recursively search child nodes for id
+            if (findEmployeeLevel(e, e_id, headLevel)) {
+                cout << "Final Head level: " << headLevel << endl;
+                return headLevel;
+            } else {
+                headLevel--;
             }
+        }
+    return false;
     }
 }
 
