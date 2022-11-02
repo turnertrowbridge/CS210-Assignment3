@@ -32,8 +32,8 @@ void assert(bool didPass, string message) {
         cout << "FAILED: " << message << endl;
         // Halts execution, comment out to
         // continue testing other parts
-		// If you do comment this out, ignore the
-		// "All test cases passed!" printout
+        // If you do comment this out, ignore the
+        // "All test cases passed!" printout
         exit(EXIT_FAILURE);
     }
 }
@@ -79,10 +79,10 @@ int main(int argc, char **argv) {
 
     // Begin Testing
     // A few sample testing code are provided below
-    
+
     // TODO Test all Orgtree functions
     //      according to the specifications in the comment section ABOVE each function signature. 
-    
+
     // IMPORTANT: You should also construct at least one different chart 
     // Also make sure to check edge cases, such as empty chart, or one employee chart.
 
@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
     employeePresent = Orgtree::isEmployeePresentInOrg(head, 12);
     assert(employeePresent, "ID 12 present in tree");
 
-    for(int i =1; i < 13; i++){
+    for (int i = 1; i < 13; i++) {
         employeePresent = Orgtree::isEmployeePresentInOrg(head, i);
         assert(employeePresent, "ID present in tree");
     }
