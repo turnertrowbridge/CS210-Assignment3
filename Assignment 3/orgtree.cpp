@@ -19,26 +19,24 @@ bool Orgtree::isEmployeePresentInOrg(Employee *head, int e_id) {
     if (head == nullptr) {
         return false;
     }
-        // base case 2: if the employee is found, return true
+    // base case 2: if the employee is found, return true
     else if (head->getEmployeeID() == e_id) {
         return true;
     }
 
-        // search employee from each child of the head
-        // return true if the employee is found in one of the child subtree
-        // if not found, return false
-    else {
-        // loop through child nodes
-//        for (int i = 0; i < head->getDirectReports().size(); i++) {
-        for (Employee* e: head->getDirectReports()) {
-            cout << e->getEmployeeID() << endl;
-            // recursively search child nodes for id
-            if (isEmployeePresentInOrg(e, e_id)) {
-                return true;
-            }
+    // search employee from each child of the head
+    // return true if the employee is found in one of the child subtree
+    // if not found, return false
+
+    // loop through child nodes
+    for (Employee* e: head->getDirectReports()) {
+        cout << e->getEmployeeID() << endl;
+        // recursively search child nodes for id
+        if (isEmployeePresentInOrg(e, e_id)) {
+            return true;
         }
-        return false;
     }
+    return false;
 }
 
 /**
@@ -68,31 +66,23 @@ int Orgtree::findEmployeeLevel(Employee *head, int e_id, int headLevel) {
     if (head == nullptr) {
         return Employee::EMPTY_EMPLOYEEID;
     }
-        // base case 2: if the employee is found, return true
+        // base case 2: if the employee is found, return headLevel
     else if (head->getEmployeeID() == e_id) {
         return headLevel;
     }
 
-        // search employee from each child of the head
-        // return true if the employee is found in one of the child subtree
-        // if not found, return false
-    else {
-        // loop through child nodes
-//        for (int i = 0; i < head->getDirectReports().size(); i++) {
-    for (Employee* e: head->getDirectReports()) {
-            headLevel++;
-            cout << "Employee ID: " << e->getEmployeeID() << endl;
-            cout << "Head level: " << headLevel << endl;
-            // recursively search child nodes for id
-            if (findEmployeeLevel(e, e_id, headLevel)) {
-                cout << "Final Head level: " << headLevel << endl;
-                return headLevel;
-            } else {
-                headLevel--;
-            }
+    // search employee from each child of the head
+    // loop through child nodes
+    for (Employee *e: head->getDirectReports()) {
+        cout << "Employee ID: " << e->getEmployeeID() << endl;
+        cout << "Level: " << headLevel << endl;
+        // recursively search child nodes for id
+        const int result = findEmployeeLevel(e, e_id, headLevel + 1);
+        if (result >= 0) {
+            return result;
         }
-    return false;
     }
+    return Employee::EMPTY_EMPLOYEEID;
 }
 
 /**

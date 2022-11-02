@@ -95,13 +95,13 @@ int main(int argc, char **argv) {
 
     // Test findEmployeeLevel function
     int employeeLevel = Orgtree::findEmployeeLevel(head, 6, 0);
-    assert(employeeLevel == 1, "Level of ID 6 returns " + to_string(employeeLevel) + ", expected 2");
+    assert(employeeLevel == 2, "Level of ID 6 returns " + to_string(employeeLevel) + ", expected 2");
 
     employeeLevel = Orgtree::findEmployeeLevel(head, 12, 0);
-    assert(employeeLevel == 1, "Level of ID 12 returns " + to_string(employeeLevel) + ", expected 3");
+    assert(employeeLevel == 3, "Level of ID 12 returns " + to_string(employeeLevel) + ", expected 3");
 
     employeeLevel = Orgtree::findEmployeeLevel(head, 8, 0);
-    assert(employeeLevel == 1, "Level of ID 8 returns " + to_string(employeeLevel) + ", expected 2");
+    assert(employeeLevel == 2, "Level of ID 8 returns " + to_string(employeeLevel) + ", expected 2");
 
     //TODO...
 
