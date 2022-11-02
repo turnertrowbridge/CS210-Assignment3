@@ -119,10 +119,14 @@ Employee *Orgtree::findClosestSharedManager(Employee *head, int e1_id, int e2_id
     // as required in the assignment 3 prompt to avoid penalties.
 
     // base case 1: empty organization chart
-
+    if (head == nullptr) {
+        return nullptr;
+    }
 
     // base case 2: either e1_id or e2_id is the same as the head / root
-
+    if (head->getEmployeeID() == e1_id || head->getEmployeeID() == e2_id) {
+        return head;
+    }
 
     // Recursively traverse through direct reports of the head to find
     // where e1 and e2 are
@@ -144,6 +148,32 @@ Employee *Orgtree::findClosestSharedManager(Employee *head, int e1_id, int e2_id
        3) if neither e1 or e2 is found in the org chart, return nullptr
     */
 
+    bool e1Present = isEmployeePresentInOrg(head, e1_id);
+    bool e2Present = isEmployeePresentInOrg(head, e2_id);
+
+    for (Employee *e: head->getDirectReports()) {
+
+        // Check if e1 and e2 are in the subtree
+        bool e1InSubtree = isEmployeePresentInOrg(e, e1_id);
+        bool e2InSubtree = isEmployeePresentInOrg(e, e2_id);
+
+        // if employees are in same subtree, search deeper in subtree
+        if(e1InSubtree && e2InSubtree) {
+            return findClosestSharedManager(e, e1_id, e2_id);
+        }
+
+        // both employees are present and only one employee is in the subtree
+        else if(e1Present && e2Present && (e1InSubtree || e2InSubtree)) {
+            return head;
+        }
+
+        // if ONLY one employee is present and one employee is in the subtree
+        else if((e1Present || e2Present) && (e1InSubtree || e2InSubtree)) {
+            return findClosestSharedManager(e, e1_id, e2_id);
+        }
+    }
+
+    //neither e1 nor e2 is found
     return nullptr;
 }
 
@@ -212,7 +242,7 @@ int Orgtree::findNumOfManagersBetween(Employee *head, int e1_id, int e2_id) {
  */
 void Orgtree::deleteOrgtree(Employee *head) {
     // Write your recursive implementation here
-
+    
     // Important: Your implementation MUST use the recursive approach
     // as required in the assignment 3 prompt to avoid penalties.
 
