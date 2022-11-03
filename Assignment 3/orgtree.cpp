@@ -2,6 +2,16 @@
 #include "orgtree.h"
 
 /**
+ * SINGLE EXAMINEE AFFIDAVIT
+*“I, the undersigned, promise that this exam submission is my own work. I recognize that should this not
+*be the case; I will be subject to plagiarism penalties as outlined in the course syllabus.”
+*Student Name: Turner Trowbridge
+*RED ID: 827959204
+Date: 11/2/2022
+*/
+
+
+/**
  * Check if an employee is present in an organization chart. 
  * 
  * @param  head the head / root Employee of the organization chart
@@ -30,12 +40,12 @@ bool Orgtree::isEmployeePresentInOrg(Employee *head, int e_id) {
 
     // loop through child nodes
     for (Employee *e: head->getDirectReports()) {
-//        cout << e->getEmployeeID() << endl;
         // recursively search child nodes for id
         if (isEmployeePresentInOrg(e, e_id)) {
             return true;
         }
     }
+    // return false if no more child nodes
     return false;
 }
 
@@ -74,14 +84,13 @@ int Orgtree::findEmployeeLevel(Employee *head, int e_id, int headLevel) {
     // search employee from each child of the head
     // loop through child nodes
     for (Employee *e: head->getDirectReports()) {
-//        cout << "Employee ID: " << e->getEmployeeID() << endl;
-//        cout << "Level: " << headLevel << endl;
         // recursively search child nodes for id
         const int result = findEmployeeLevel(e, e_id, headLevel + 1);
         if (result >= 0) {
             return result;
         }
     }
+    // return -1 if no more child nodes found
     return Employee::EMPTY_EMPLOYEEID;
 }
 
@@ -148,6 +157,7 @@ Employee *Orgtree::findClosestSharedManager(Employee *head, int e1_id, int e2_id
        3) if neither e1 or e2 is found in the org chart, return nullptr
     */
 
+    // check if e1 or e2 is present inside tree
     bool e1Present = isEmployeePresentInOrg(head, e1_id);
     bool e2Present = isEmployeePresentInOrg(head, e2_id);
 
@@ -157,24 +167,27 @@ Employee *Orgtree::findClosestSharedManager(Employee *head, int e1_id, int e2_id
         bool e1InSubtree = isEmployeePresentInOrg(e, e1_id);
         bool e2InSubtree = isEmployeePresentInOrg(e, e2_id);
 
-        // if employees are in same subtree, search deeper in subtree
+        // if employees are in same subtree
+        // search deeper in subtree
         if (e1InSubtree && e2InSubtree) {
             return findClosestSharedManager(e, e1_id, e2_id);
         }
 
-            // both employees are present and only one employee is in the subtree
+        // if both employees are present and only one employee is in the subtree
+        // return parent
         else if (e1Present && e2Present && (e1InSubtree || e2InSubtree)) {
             return head;
         }
 
-            // if ONLY one employee is present and one employee is in the subtree
+        // if ONLY one employee is present and employee is in the subtree
+        // go deeper to find position of present employee
         else if ((e1Present || e2Present) && (e1InSubtree || e2InSubtree)) {
             return findClosestSharedManager(e, e1_id, e2_id);
         }
     }
 
     //neither e1 nor e2 is found
-    return nullptr;
+    return NULL;
 }
 
 /**
