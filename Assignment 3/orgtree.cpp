@@ -2,6 +2,16 @@
 #include "orgtree.h"
 
 /**
+ * SINGLE EXAMINEE AFFIDAVIT
+*“I, the undersigned, promise that this exam submission is my own work. I recognize that should this not
+*be the case; I will be subject to plagiarism penalties as outlined in the course syllabus.”
+*Student Name: Turner Trowbridge
+*RED ID: 827959204
+Date: 11/2/2022
+*/
+
+
+/**
  * Check if an employee is present in an organization chart. 
  * 
  * @param  head the head / root Employee of the organization chart
@@ -24,24 +34,19 @@ bool Orgtree::isEmployeePresentInOrg(Employee *head, int e_id) {
         return true;
     }
 
-        // search employee from each child of the head
-        // return true if the employee is found in one of the child subtree
-        // if not found, return false
-    else {
-        // loop through child nodes
-        bool isFound = false;
-        for (Employee* e: head->getDirectReports()) {
-            isFound = isEmployeePresentInOrg(e, e_id);
-            cout << e->getEmployeeID() << endl;
+    // search employee from each child of the head
+    // return true if the employee is found in one of the child subtree
+    // if not found, return false
 
-            // recursively search child nodes for id
-            if (isFound == true) {
-            return isFound;
-            }
-
+    // loop through child nodes
+    for (Employee *e: head->getDirectReports()) {
+        // recursively search child nodes for id
+        if (isEmployeePresentInOrg(e, e_id)) {
+            return true;
         }
-        return false;
     }
+    // return false if no more child nodes
+    return false;
 }
 
 /**
@@ -71,29 +76,22 @@ int Orgtree::findEmployeeLevel(Employee *head, int e_id, int headLevel) {
     if (head == nullptr) {
         return Employee::EMPTY_EMPLOYEEID;
     }
-        // base case 2: if the employee is found, return true
+        // base case 2: if the employee is found, return headLevel
     else if (head->getEmployeeID() == e_id) {
         return headLevel;
     }
 
-        // search employee from each child of the head
-    else {
-        // loop through child nodes
-//        for (int i = 0; i < head->getDirectReports().size(); i++) {
-    for (Employee* e: head->getDirectReports()) {
-            headLevel++;
-            cout << "Employee ID: " << e->getEmployeeID() << endl;
-            cout << "Head level: " << headLevel << endl;
-            // recursively search child nodes for id
-            if (findEmployeeLevel(e, e_id, headLevel)) {
-                cout << "Final Head level: " << headLevel << endl;
-                return headLevel;
-            } else {
-                headLevel--;
-            }
+    // search employee from each child of the head
+    // loop through child nodes
+    for (Employee *e: head->getDirectReports()) {
+        // recursively search child nodes for id
+        const int result = findEmployeeLevel(e, e_id, headLevel + 1);
+        if (result >= 0) {
+            return result;
         }
-    return false;
     }
+    // return -1 if no more child nodes found
+    return Employee::EMPTY_EMPLOYEEID;
 }
 
 /**
@@ -130,10 +128,14 @@ Employee *Orgtree::findClosestSharedManager(Employee *head, int e1_id, int e2_id
     // as required in the assignment 3 prompt to avoid penalties.
 
     // base case 1: empty organization chart
-
+    if (head == nullptr) {
+        return nullptr;
+    }
 
     // base case 2: either e1_id or e2_id is the same as the head / root
-
+    if (head->getEmployeeID() == e1_id || head->getEmployeeID() == e2_id) {
+        return head;
+    }
 
     // Recursively traverse through direct reports of the head to find
     // where e1 and e2 are
@@ -155,7 +157,37 @@ Employee *Orgtree::findClosestSharedManager(Employee *head, int e1_id, int e2_id
        3) if neither e1 or e2 is found in the org chart, return nullptr
     */
 
-    return nullptr;
+    // check if e1 or e2 is present inside tree
+    bool e1Present = isEmployeePresentInOrg(head, e1_id);
+    bool e2Present = isEmployeePresentInOrg(head, e2_id);
+
+    for (Employee *e: head->getDirectReports()) {
+
+        // Check if e1 and e2 are in the subtree
+        bool e1InSubtree = isEmployeePresentInOrg(e, e1_id);
+        bool e2InSubtree = isEmployeePresentInOrg(e, e2_id);
+
+        // if employees are in same subtree
+        // search deeper in subtree
+        if (e1InSubtree && e2InSubtree) {
+            return findClosestSharedManager(e, e1_id, e2_id);
+        }
+
+        // if both employees are present and only one employee is in the subtree
+        // return parent
+        else if (e1Present && e2Present && (e1InSubtree || e2InSubtree)) {
+            return head;
+        }
+
+        // if ONLY one employee is present and employee is in the subtree
+        // go deeper to find position of present employee
+        else if ((e1Present || e2Present) && (e1InSubtree || e2InSubtree)) {
+            return findClosestSharedManager(e, e1_id, e2_id);
+        }
+    }
+
+    //neither e1 nor e2 is found
+    return NULL;
 }
 
 /**
@@ -179,12 +211,31 @@ Employee *Orgtree::findClosestSharedManager(Employee *head, int e1_id, int e2_id
 int Orgtree::findNumOfManagersBetween(Employee *head, int e1_id, int e2_id) {
 
     // Write your implementation here. You do NOT need to use recursive approach here.
-
     // Use the above functions wherever you need to implement this function.
+
+    bool e1Present = isEmployeePresentInOrg(head, e1_id);
+    bool e2Present = isEmployeePresentInOrg(head, e2_id);
+
+    if (!e1Present || !e2Present) {
+        return Employee::NOT_FOUND;
+    }
+
+    Employee *sharedManager = findClosestSharedManager(head, e1_id, e2_id);
+    int sharedManagerLevel = findEmployeeLevel(head, sharedManager->getEmployeeID(), 0);
+
+    // find edges between employees and return
+
+            // employee 1 level - manager level - 1
+    return findEmployeeLevel(head, e1_id, 0)
+           - sharedManagerLevel
+
+           // add
+           // employee 2 level - manager level
+           + findEmployeeLevel(head, e2_id, 0)
+           - sharedManagerLevel - 1;
 
     // Continue only if both employee nodes e1_id and e2_id are in the org chart tree
     // otherwise, return Employee::NOT_FOUND
-    return Employee::NOT_FOUND;
 
     // The number of managers between employee e1 and employee e2 can be calculated by:
     // number of edges between e1_id and closest shared manager +
@@ -228,10 +279,16 @@ void Orgtree::deleteOrgtree(Employee *head) {
     // as required in the assignment 3 prompt to avoid penalties.
 
     // base case: empty tree or organization chart
-
+    if (head == NULL)
+    {
+        return;
+    }
     // delete children recursively
-
+    for (Employee *e: head->getDirectReports()) {
+        deleteOrgtree(e);
+    }
     // print current node's employee ID and a new line
+    cout << head->getEmployeeID() << endl;
     // delete the current node after deleting its children
-
+    delete head;
 }
